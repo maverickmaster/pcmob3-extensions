@@ -39,12 +39,13 @@ function NotesScreen({ navigation }) {
   });
 
   function addNote() {
-    const newNote = {
-      title: "Sample new note",
-      done: false,
-      id: notes.length.toString(),
-    };
-    setNotes([...notes, newNote]);
+    navigation.navigate("Add Screen");
+    //const newNote = {
+    //title: "Sample new note",
+    //done: false,
+    //id: notes.length.toString(),
+    //};
+    //setNotes([...notes, newNote]);
   }
 
   function renderItem({ item }) {
@@ -74,12 +75,59 @@ function NotesScreen({ navigation }) {
   );
 }
 
+const InnerStack = createStackNavigator();
+
+function NotesStack() {
+  return (
+    <InnerStack.Navigator>
+      <InnerStack.Screen
+        name="Notes"
+        component={NotesScreen}
+        options={{
+          headerTitle: "Notes App",
+          headerTitleStyle: {
+            fontWeight: "bold",
+            fontSize: 30,
+          },
+          headerStyle: {
+            height: 120,
+            backgroundColor: "yellow",
+            borderBottomColor: "#ccc",
+            borderBottomWidth: 1,
+          },
+        }}
+      />
+    </InnerStack.Navigator>
+  );
+}
+
+function AddScreen({ navigation }) {
+  return (
+    <View style={[styles.container, { backgroundColor: "white" }]}>
+      <Text style={{ fontSize: 24 }}>This is the add screen</Text>
+      <TouchableOpacity
+        style={{
+          padding: 10,
+          backgroundColor: "orange",
+          borderRadius: 5,
+          marginTop: 30,
+        }}
+        onPress={() => navigation.goBack()}
+      >
+        <Text>Dismiss</Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
+
 const Stack = createStackNavigator();
 
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator headerMode="none" mode="modal">
+        <Stack.Screen name="Notes Stack" component={NotesStack} />
+        <Stack.Screen name="Add Screen" component={AddScreen} />
         <Stack.Screen
           name="Notes"
           component={NotesScreen}
