@@ -39,7 +39,7 @@ function NotesScreen({ navigation }) {
   });
 
   function addNote() {
-    let newNote = {
+    const newNote = {
       title: "Sample new note",
       done: false,
       id: notes.length.toString(),
