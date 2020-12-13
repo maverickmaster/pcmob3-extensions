@@ -32,7 +32,7 @@ export default function AddScreen({ navigation }) {
           <Text style={styles.buttonText}>Dismiss</Text>
         </TouchableOpacity>
       </View>
-      {/* <Text>{text.toUpperCase()}</Text> */}
+      <Text>{text.toUpperCase()}</Text>
       <Text style={{ marginTop: 40, color: "grey" }}>
         This is what you typed:
       </Text>

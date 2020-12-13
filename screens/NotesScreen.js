@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { FontAwesome5 } from "@expo/vector-icons";
 import * as SQLite from "expo-sqlite";
 import * as FileSystem from "expo-file-system";
 
@@ -28,6 +29,17 @@ export default function NotesScreen({ navigation, route }) {
         (txObj, error) => console.log(`Error: ${error}`)
       );
     });
+  }
+
+  //This is to delete task from database
+  function deleteItem(id) {
+    db.transaction(
+      (tx) => {
+        tx.executeSql(`DELETE FROM notes where id=?`, [id]);
+      },
+      null,
+      refreshNotes
+    );
   }
 
   // This is to set up the database on first run
@@ -66,6 +78,25 @@ export default function NotesScreen({ navigation, route }) {
     });
   });
 
+  // This is to set up the top left button
+  useEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => (
+        <TouchableOpacity onPress={resetNote}>
+          <FontAwesome5
+            name="remove-format"
+            size={24}
+            color="black"
+            style={{
+              color: "#f55",
+              marginLeft: 10,
+            }}
+          />
+        </TouchableOpacity>
+      ),
+    });
+  });
+
   // Monitor route.params for changes and add items to the database
   useEffect(() => {
     if (route.params?.text) {
@@ -91,19 +122,34 @@ export default function NotesScreen({ navigation, route }) {
     //setNotes([...notes, newNote]);
   }
 
+  //This reset to hid Notes
+  function resetNote() {
+    setNotes([]);
+  }
+
   function renderItem({ item }) {
     return (
-      <View
-        style={{
-          padding: 10,
-          paddingTop: 20,
-          paddingBottom: 20,
-          borderBottomColor: "#ccc",
-          borderBottomWidth: 1,
-        }}
-      >
-        <Text style={{ textAlign: "left", fontSize: 16 }}>{item.title}</Text>
-      </View>
+      <TouchableOpacity>
+        <View
+          style={{
+            padding: 10,
+            paddingTop: 20,
+            paddingBottom: 20,
+            borderBottomColor: "#ccc",
+            borderBottomWidth: 1,
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+        >
+          <Text style={{ textAlign: "left", fontSize: 16 }}>{item.title}</Text>
+          <Ionicons
+            name="remove-circle-sharp"
+            size={20}
+            color="firebrick"
+            onPress={() => deleteItem(item.id)}
+          />
+        </View>
+      </TouchableOpacity>
     );
   }
 
@@ -122,6 +168,7 @@ export default function NotesScreen({ navigation, route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
